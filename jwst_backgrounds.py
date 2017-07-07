@@ -140,14 +140,16 @@ def read_JWST_precompiled_bkg(infile, bkg_dir, showplot=False, thisday=-99, verb
     if showplot :
         fontsize=16
         plt.clf()
-        if thisday in calendar : pass
-        else :   thisday = find_nearest(calendar, np.mean(calendar))  # plot the middle of the calendar
+        if thisday in calendar :    day_index = index_of_day(calendar, thisday)
+        else :
+            thisday = find_nearest(calendar, np.mean(calendar))  # plot the middle of the calendar
+            day_index =  index_of_day(calendar, thisday)
         print "Plotting spectrum for calendar day", thisday
         plt.plot(wave_array, nonzodi_bg, label="ISM")
-        plt.plot(wave_array, zodi_bg[thisday, :], label="Zodi")
-        plt.plot(wave_array, stray_light_bg[thisday, :], label="Stray light")
+        plt.plot(wave_array, zodi_bg[day_index, :], label="Zodi")
+        plt.plot(wave_array, stray_light_bg[day_index, :], label="Stray light")
         plt.plot(wave_array, thermal, label = "Thermal")
-        plt.plot(wave_array, total[thisday, :], label = "Total", color='black', lw=3)
+        plt.plot(wave_array, total[day_index, :], label = "Total", color='black', lw=3)
         plt.xlim(0.6,30)
         plt.xlabel("wavelength (micron)", fontsize=fontsize)
         plt.ylabel("Equivalent in-field radiance (MJy/SR)", fontsize=fontsize)
@@ -160,6 +162,10 @@ def index_of_wavelength(wave_array, desired_wavelength) :  # look up index of wa
     the_index = np.where(wave_array == desired_wavelength)
     return(the_index[0][0])
 
+def index_of_day(calendar, desired_day) :
+    the_index = np.where(calendar == desired_day)
+    return(the_index[0][0])
+    
 def myfile_from_healpix(healpix) :
     return ( str(healpix)[0:4] + "/sl_pix_" + str(healpix) + ".bin")
 
@@ -172,6 +178,7 @@ def calc_the_healpix(df):  # For each row of a dataframe, take RA, DEC in degree
 def make_bathtub(results, wavelength_desired, thresh, showthresh=True, showplot=False, showsubbkgs=False, showannotate=True, title=False, label=False) :
     # Once binary file was read w  read_JWST_precompiled_bkg(), compute the bathtub, and optionally, make a plot.
     # thresh is threshold above minimum background, to calculate number of good days
+    fontsize=14
     (calendar, RA, DEC, pos, wave_array, nonzodi_bg, thermal, zodi_bg, stray_light_bg, total)  = results # show how to break it up
     the_index = index_of_wavelength(wave_array, wavelength_desired)
     total_thiswave = total[ :, the_index]

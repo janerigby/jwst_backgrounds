@@ -1,4 +1,9 @@
-''' jwst_backgrounds.py is a a simple program to predict the levels of background emission
+''' This version of the code is obsolete!  It has been cleaned up and is now 
+maintained by STScI, as the JWST Background Tool
+See https://jwst-docs.stsci.edu/jwst-other-tools/jwst-backgrounds-tool
+
+old readme below
+jwst_backgrounds.py is a a simple program to predict the levels of background emission
 in JWST observations, for use in proposal planning.
 It accesses a precompiled background cache prepared by STScI.
 For a given target (RA, DEC), and wavelength, it does the following:
